@@ -7,14 +7,12 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://rainbowl-d.github.io/fortunePlanner/"> <meta property="og:title" content="운세를 같이 쓰는 1년 플래너">
 <meta property="og:description" content="연초에 봤던 운세. 얼마나 맞았을까? 체크해보고 이미지로 저장해보세요.">
-<!-- <meta property="og:image" content="https://rainbowl-d.github.io/fortunePlanner//og-image.png"> -->
 <meta property="og:site_name" content="운세를 같이 쓰는 1년 플래너">
 <meta property="og:locale" content="ko_KR">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="https://rainbowl-d.github.io/fortunePlanner/"> <meta name="twitter:title" content="운세를 같이 쓰는 1년 플래너">
 <meta name="twitter:description" content="연초에 봤던 운세. 얼마나 맞았을까? 체크해보고 이미지로 저장해보세요.">
-<!-- <meta name="twitter:image" content="https://rainbowl-d.github.io/fortunePlanner//og-image.png"> -->
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -49,11 +47,19 @@
   body{
     position: relative;
     margin:0;
-    padding: 40px 24px 80px;
+    padding: 20px 24px 0;
     background: var(--bg-app);
     font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
     color: var(--color-text-main);
     line-height: 1.5;
+  }
+  footer{
+    margin-top: 50px;
+    padding: 20px 0 20px;
+    width: 100%;
+    font-size: 12px;
+    text-align: center;
+    border-top: 1px solid var(--line);
   }
 
   #app{
@@ -69,11 +75,21 @@
     background: var(--paper);
     border-radius: 22px;
     box-shadow: var(--shadow);
+    margin:20px 20px 0;
     padding: 34px 40px;
     margin-bottom: 22px;
     border: 1px solid var(--line);
     position: relative;
     overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .header-info-group {
+    flex: 1;
+    min-width: 280px;
   }
   .header-title{
     font-size: 30px;
@@ -100,13 +116,39 @@
   .editable:focus{ background:#FFFFFF; border-style: solid; }
   .editable[data-empty="true"]::before{
     content: attr(data-placeholder);
-    color: #C9BEA4;
+    color: var(--color-text-main-soft);
   }
   .header-sub{
     margin-top: 10px;
     font-size: 13.5px;
     color: var(--color-text-main-soft);
     position: relative; z-index:1;
+  }
+  
+  /* 헤더 통계 대시보드 뱃지 */
+  .header-stats-badge {
+    background: #f1f3f7;
+    border: 1px solid var(--border-color);
+    padding: 12px 20px;
+    border-radius: 14px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--color-text-main);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    box-shadow: var(--shadow-soft);
+  }
+  .header-stats-badge span{
+    display: flex;
+    align-items: center;
+  }
+  .header-stats-badge span strong {
+    font-size: 18px;
+    padding-left: 6px;
+    color: var(--color-text-main);
+    font-weight: 800;
   }
 
   /* ============ TOOLBAR ============ */
@@ -118,7 +160,7 @@
     justify-content: space-between;
     margin-bottom: 22px;
   }
-  .toolbar-group{ display:flex; gap:10px; flex-wrap: wrap; align-items:center; }
+  .toolbar-group{ display:flex; gap:10px; flex-wrap: wrap; align-items:center; margin: 0 20px;}
 
   .toggle-pill{
     display:flex;
@@ -153,6 +195,7 @@
 
   /* ============ FORTUNE INPUT ============ */
   .fortune-input-card{
+    margin: 0 20px;
     background: var(--paper);
     border-radius: 18px;
     border: 1px solid var(--line);
@@ -181,16 +224,19 @@
   .quarter-section{position: relative; width: 100%; overflow: hidden; margin-bottom: 28px; padding: 0 20px;}
   .quarter-section-label{
     font-size: 15px; font-weight: 800; letter-spacing: .04em;
-    margin: 0 0 12px 4px;
+    margin: 0 0 0 4px;
     display:inline-flex; align-items:center; gap:8px;
     padding: 5px 14px; border-radius: 999px;
+    border: 2px solid var(--color-text-main);
+    color: #fff;
     border: 2px solid var(--color-text-main);
   }
   .months-grid{
     position: relative;
     width: 100%;
+    padding: 15px;
     display:grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 18px;
   }
 
@@ -205,12 +251,30 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    transition: transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
   }
   .month-card.is-past{
     border: 2px solid var(--color-text-main) !important;
     background-image: radial-gradient(#fafafa 15%, transparent 15%);
     background-size: 16px 16px;
+  }
+
+  /* MVP 카드 전용 화려한 스타일 선언 */
+  .month-card.is-mvp {
+    border:2px solid #ff416c !important;
+  }
+  .mvp-crown-badge {
+    position: absolute;
+    top: -17px;
+    left: 17px;
+    font-size: 30px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+    animation: bounce 2s infinite ease-in-out;
+    z-index: 5;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
   }
 
   .month-head{
@@ -231,22 +295,75 @@
     font-size: 10.5px; color: var(--color-text-main-soft); font-weight:600; margin-left:4px;
   }
 
-  .done-badge{
+  /* 개별 달 종합 계획 달성도 헤드 뱃지 */
+  .month-achievement-wrapper {
+    margin-bottom: -4px;
+  }
+  .achievement-bar-container {
+    width: 100%;
+    background: #eee;
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .achievement-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #7c809b, #2d3142);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+  .achievement-text {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--color-text-main-soft);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .done-badge-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap:95px;
     position: absolute;
     top: -12px;
     right: -12px;
+    transform: rotate(4deg);
+    z-index: 4;
+  }
+  .done-badge{
     background: linear-gradient(135deg, #ff416c, #ff4b2b);
     color: white;
-    padding: 6px 12px;
+    padding: 5px 12px;
     border-radius: 20px;
     font-size: 0.75rem;
     font-weight: 800;
-    box-shadow: 0 4px 10px rgba(255, 65, 108, 0.3);
+    box-shadow: 0 4px 10px rgba(255, 65, 108, 0.2);
     border: 2px solid #fff;
     letter-spacing: -0.5px;
-    animation: pop 0.4s ease-out;
-    transform: rotate(5deg);
   }
+  .accuracy-badge {
+    background: #fff;
+    color: var(--color-text-main);
+    border: 1px dashed var(--border-color);
+    margin-right: 25px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: var(--shadow-soft);
+    letter-spacing: -0.3px;
+  }
+  .q1 .accuracy-badge{border-color: var(--q1-deep);}
+  .q2 .accuracy-badge{border-color: var(--q2-deep);}
+  .q3 .accuracy-badge{border-color: var(--q3-deep);}
+  .q4 .accuracy-badge{border-color: var(--q4-deep);}
+
+  .q1 .accuracy-badge strong{color: var(--q1-deep);}
+  .q2 .accuracy-badge strong{color: var(--q2-deep);}
+  .q3 .accuracy-badge strong{color: var(--q3-deep);}
+  .q4 .accuracy-badge strong{color: var(--q4-deep);}
 
   .group-box{
     border-radius: 12px;
@@ -308,7 +425,7 @@
   .item-row.is-cancelled .item-text{
     text-decoration: line-through;
   }
-  .item-row.is-cancelled{ opacity: .72; filter: grayscale(1);}
+  .item-row.is-cancelled{ opacity: .72; background-color: #f3f3f3; border-color: #7c809b; color: #7c809b;}
   .item-row.is-starred{
     background: var(--highlight) !important;
     border: 2px dashed #ff4b2b !important;
@@ -321,7 +438,12 @@
     top: -7px; left: -9px;
   }
   .item-row.is-starred.is-cancelled{
-    filter: grayscale(1);
+    background-color: #f3f3f3 !important;
+    border-color: #7c809b !important;
+    color: #7c809b;
+  }
+  .item-row.is-cancelled .badge-event{
+    color: #7c809b;
   }
   .item-row.is-starred .item-text{ font-weight: 800; }
 
@@ -356,7 +478,7 @@
     justify-content: center;
     align-items: center;
     border:none; background: var(--color-text-main); color:#fff; border-radius:6px;
-    width:22px; height:22px; font-size:13px; cursor:pointer; flex-shrink:0;
+    width:22px; height:22px; font-size:14px; cursor:pointer; flex-shrink:0;
   }
 
   /* Quarter color assignment */
@@ -364,18 +486,17 @@
   .month-card.q2{ border-color: var(--q2-deep); }
   .month-card.q3{ border-color: var(--q3-deep); }
   .month-card.q4{ border-color: var(--q4-deep); }
-  .month-card.is-past{ border-color: var(--q1-deep); }
 
   .month-card.q1 .fortune-box{ border-color: var(--q1-deep); }
   .month-card.q2 .fortune-box{ border-color: var(--q2-deep); }
   .month-card.q3 .fortune-box{ border-color: var(--q3-deep); }
   .month-card.q4 .fortune-box{ border-color: var(--q4-deep); }
 
-  .quarter-section.q1 .quarter-section-label{color: var(--q1-deep); border-color: var(--q1-deep);}
-  .quarter-section.q2 .quarter-section-label{color: var(--q2-deep); border-color: var(--q2-deep);}
-  .quarter-section.q3 .quarter-section-label{color: var(--q3-deep); border-color: var(--q3-deep);}
-  .quarter-section.q4 .quarter-section-label{color: var(--q4-deep); border-color: var(--q4-deep);}
-  .quarter-section.half .quarter-section-label{color: var(--color-text-main);}
+  .quarter-section.q1 .quarter-section-label{background-color: var(--q1-deep);}
+  .quarter-section.q2 .quarter-section-label{background-color: var(--q2-deep);}
+  .quarter-section.q3 .quarter-section-label{background-color: var(--q3-deep);}
+  .quarter-section.q4 .quarter-section-label{background-color: var(--q4-deep);}
+  .quarter-section.half .quarter-section-label{background-color: var(--color-text-main);}
 
   /* ============ MODAL ============ */
   .modal-overlay{
@@ -390,7 +511,7 @@
     box-shadow: 0 20px 60px rgba(0,0,0,0.25);
   }
   .modal-box h2{ margin-top:0; font-size: 19px; }
-  .modal-box ol{ font-size: 13px; color: var(--color-text-main-soft); padding-left: 20px; }
+  .modal-box ol{ font-size: 13px; color: var(--color-text-main); padding-left: 20px; }
   .modal-box ol li{ margin-bottom: 6px; }
   .modal-box pre{
     background: #F7F4EA; border:1px solid var(--line); border-radius: 12px;
@@ -398,28 +519,38 @@
     max-height: 300px; overflow-y:auto; color:#4A4433; line-height:1.6;
   }
   .modal-close{
-    position: absolute; top: 14px; right: 16px;
+    position: absolute; top:0; right: 0;
     background:none; border:none; font-size: 20px; cursor:pointer; color: var(--color-text-main-soft);
   }
   .modal-inner{ position: relative; }
   .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top: 14px; }
 
-  /* ============ 미디어 쿼리 (모바일 화면 대응 최적화) ============ */
-  @media (max-width: 980px){
-    .months-grid{ grid-template-columns: repeat(2, 1fr); }
+  /* ============ 미디어 쿼리 (화면 대응 최적화) ============ */
+  @media (max-width: 1280px) {
+    body { padding: 40px 16px 80px; }
+    .quarter-section { padding: 0 4px; }
+    .months-grid { gap: 14px; }
+    .month-card { padding: 18px 16px; }
   }
+
+  @media (max-width: 980px){
+    .months-grid{ grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .quarter-section { padding: 0 10px; }
+  }
+
   @media (max-width: 640px){
     body { padding: 20px 12px 60px; }
     .months-grid{ grid-template-columns: 1fr; gap: 16px; }
-    .header-card{ padding: 24px 20px; }
+    .header-card{ padding: 24px 20px; flex-direction: column; align-items: flex-start; }
     .header-title{ font-size: 20px; line-height: 1.4; }
-    .quarter-section {margin-bottom: 24px; }
+    .quarter-section { margin-bottom: 24px; padding: 0; }
     .month-card { padding: 18px; }
-    .done-badge { top: -10px; right: 10px; }
+    .done-badge-group { top: -10px; right: 10px; }
     .toolbar { flex-direction: column; align-items: stretch; gap: 12px; }
     .toolbar-group { justify-content: center; }
     .add-row { flex-wrap: wrap; }
     .add-row input[type="text"] { min-width: 100px; }
+    .header-stats-badge { width: 100%; justify-content: space-around; }
   }
 </style>
 </head>
@@ -428,16 +559,23 @@
 <div id="app">
 
   <div class="header-card">
-    <div class="header-title">
-      <span class="plain">[</span>
-      <span class="editable" id="userName" contenteditable="true" data-placeholder="이름"></span>
-      <span class="plain">]의</span>
-      <span class="plain" id="yearLabel"></span>
-      <span class="plain">[</span>
-      <span class="editable" id="userTitle" contenteditable="true" data-placeholder="올해의 다짐을 적어보세요"></span>
-      <span class="plain">]</span>
+    <div class="header-info-group">
+      <div class="header-title">
+        <span class="plain" id="yearLabel"></span> | 
+        <span class="editable" id="userName" contenteditable="true" data-placeholder="이름"></span>
+        <span class="editable" id="userTitle" contenteditable="true" data-placeholder="올해의 다짐을 적어보세요"></span>
+      </div>
+      <div class="header-sub" id="todayLabel"></div>
     </div>
-    <div class="header-sub" id="todayLabel"></div>
+    <div class="header-stats-badge">
+      <span>1년 진행도: <strong id="totalProgress">0%</strong></span>
+      <span>|</span>
+      <span>누적 적중률: <strong id="totalAccuracy">-</strong></span>
+      <span>|</span>
+      <span>누적 달성도: <strong id="totalAchievement">0%</strong></span>
+      <span>|</span>
+      <span>올해의 MVP: <strong id="yearlyMvpMonth">-</strong></span>
+    </div>
   </div>
 
   <div class="toolbar">
@@ -448,7 +586,12 @@
       </div>
     </div>
     <div class="toolbar-group" data-html2canvas-ignore="true">
-      <button class="btn btn-guide" id="guideBtn">💡 사용 가이드</button>
+      <button class="btn btn-export" id="guideBtn">💡 사용 가이드</button>
+      <button class="btn btn-guide" id="resetBtn">⛔ 전체 데이터 초기화</button>
+      <button class="btn btn-guide" id="downloadBackupBtn">💾 플랜 저장하기</button>
+      <button class="btn btn-guide" id="uploadBackupBtn">📂 플랜 불러오기</button>
+      <input type="file" id="backupFileInput" accept=".json" style="display: none;" />
+      <span>|</span>
       <button class="btn btn-export" id="exportBtn">🖼 이미지로 저장</button>
     </div>
   </div>
@@ -473,8 +616,8 @@
       <button class="modal-close" id="modalCloseBtn">✕</button>
       <h2>💡 AI 운세 사용 가이드</h2>
       <ol>
-        <li>아래 프롬프트를 복사해서 ChatGPT, 제미나이 등 대화형 AI에게 붙여넣어 주세요.</li>
-        <li>AI가 안내하는 순서대로 사주 원본과 올해 목표를 입력해 주세요.</li>
+        <li>아래 프롬프트를 복사해서 ChatGPT, 제미나이, 클로드 등 대화형 AI에게 붙여넣어 주세요.</li>
+        <li>AI가 안내하는 순서대로 운세를 볼 수 있는 데이터 원본(운세 사이트 등에서 제공하는 데이터)과 집중적으로 보고싶은 운세를 입력해 주세요.</li>
         <li>AI 답변 중 <strong>[M1] ~ [M12] 규격 코드 블록</strong>만 복사해서, 이 페이지의 "AI 운세 텍스트 붙여넣기" 박스에 넣고 적용 버튼을 눌러주세요.</li>
       </ol>
       <pre><code id="promptCode"></code></pre>
@@ -483,7 +626,7 @@
       </div>
       <span class="toast-msg" id="copyToast" style="display:block;text-align:right;margin-top:6px;">복사되었습니다!</span>
 
-      <h3>운세 사이트 추천</h3>
+      <h3>🔮 운세 사이트 추천</h3>
       <ol>
         <li>
           <a href="https://sky.told.me/" target="_blank">혼천의</a> <span>( https://sky.told.me/ )</span>
@@ -495,6 +638,8 @@
   </div>
 </div>
 
+<footer>Copyright ⓒ 2026. Rainbowl</footer>
+
 <script>
 (function(){
   "use strict";
@@ -503,8 +648,9 @@
   const STORAGE_KEY = "yearPlannerState_v1";
   const MONTH_NAMES = ["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"];
   const QUARTER_OF = m => Math.floor((m-1)/3)+1; 
+  const HALF_OF = m => m <= 6 ? 1 : 2;
 
-  const PROMPT_TEXT = `당신은 사주 명리학 데이터를 기반으로 인간의 삶에 긍정적이고 실천적인 라이프 코칭을 제공하는 고도의 운세 마스터입니다. 
+  const PROMPT_TEXT = `당신은 사주 명리학, 자미두수, 점성력 등의 데이터를 기반으로 인간의 삶에 긍정적이고 실천적인 라이프 코칭을 제공하는 고도의 운세 마스터입니다. 
 지금부터 나와 단계별로 대화하며 나의 올해 월별 운세를 뽑아낼 거니까, 아래 규칙을 기억하고 제 신호에 맞춰 움직여 주세요.
 
 ---
@@ -539,6 +685,9 @@
   const today = new Date();
   const currentYear = today.getFullYear();
   const currentMonth = today.getMonth() + 1;
+
+  // MVP 판단을 위한 전역 활성 MVP 리스트 객체
+  let activeMvpMonths = [];
 
   function defaultMonths(){
     const obj = {};
@@ -586,6 +735,7 @@
   todayLabelEl.textContent = `오늘은 ${currentYear}년 ${currentMonth}월 ${today.getDate()}일이에요. 지난 달까지는 정산 완료, 이번 달부터는 새로운 페이지예요.`;
 
   function setEditableState(el, value, placeholder){
+    if(!el) return;
     el.textContent = value || "";
     el.dataset.empty = value ? "false" : "true";
     el.dataset.placeholder = placeholder;
@@ -594,27 +744,31 @@
   setEditableState(userNameEl, state.name, "이름");
   setEditableState(userTitleEl, state.title, "올해의 다짐을 적어보세요");
 
-  userNameEl.addEventListener("input", ()=>{
-    state.name = userNameEl.textContent.trim();
-    userNameEl.dataset.empty = state.name ? "false" : "true";
-    saveState();
-  });
-  userTitleEl.addEventListener("input", ()=>{
-    state.title = userTitleEl.textContent.trim();
-    userTitleEl.dataset.empty = state.title ? "false" : "true";
-    saveState();
-  });
+  if(userNameEl) {
+    userNameEl.addEventListener("input", ()=>{
+      state.name = userNameEl.textContent.trim();
+      userNameEl.dataset.empty = state.name ? "false" : "true";
+      saveState();
+    });
+  }
+  if(userTitleEl) {
+    userTitleEl.addEventListener("input", ()=>{
+      state.title = userTitleEl.textContent.trim();
+      userTitleEl.dataset.empty = state.title ? "false" : "true";
+      saveState();
+    });
+  }
 
   /* ---------------- MODE TOGGLE ---------------- */
   const modeHalfBtn = document.getElementById("modeHalfBtn");
   const modeQuarterBtn = document.getElementById("modeQuarterBtn");
 
   function refreshModeButtons(){
-    modeHalfBtn.classList.toggle("active", state.mode === "half");
-    modeQuarterBtn.classList.toggle("active", state.mode === "quarter");
+    if(modeHalfBtn) modeHalfBtn.classList.toggle("active", state.mode === "half");
+    if(modeQuarterBtn) modeQuarterBtn.classList.toggle("active", state.mode === "quarter");
   }
-  modeHalfBtn.addEventListener("click", ()=>{ state.mode="half"; saveState(); refreshModeButtons(); render(); });
-  modeQuarterBtn.addEventListener("click", ()=>{ state.mode="quarter"; saveState(); refreshModeButtons(); render(); });
+  if(modeHalfBtn) modeHalfBtn.addEventListener("click", ()=>{ state.mode="half"; saveState(); refreshModeButtons(); render(); });
+  if(modeQuarterBtn) modeQuarterBtn.addEventListener("click", ()=>{ state.mode="quarter"; saveState(); refreshModeButtons(); render(); });
 
   /* ---------------- ITEM ACTIONS ---------------- */
   function findItem(month, source, itemId){
@@ -626,19 +780,23 @@
     const item = findItem(month, source, id);
     if(item){ item.cancelled = !item.cancelled; saveState(); render(); }
   }
+  if (typeof window !== 'undefined') { window.toggleCancel = toggleCancel; }
   function toggleStar(month, source, id){
     const item = findItem(month, source, id);
     if(item){ item.starred = !item.starred; saveState(); render(); }
   }
+  if (typeof window !== 'undefined') { window.toggleStar = toggleStar; }
   function toggleChecked(month, source, id){
     const item = findItem(month, source, id);
     if(item){ item.checked = !item.checked; saveState(); render(); }
   }
+  if (typeof window !== 'undefined') { window.toggleChecked = toggleChecked; }
   function deleteItem(month, source, id){
     const list = state.months[month][source];
     const idx = list.findIndex(it => it.id === id);
     if(idx > -1){ list.splice(idx,1); saveState(); render(); }
   }
+  if (typeof window !== 'undefined') { window.deleteItem = deleteItem; }
   function addItem(month, source, type, text){
     const clean = text.trim();
     if(!clean) return;
@@ -648,6 +806,7 @@
     saveState();
     render();
   }
+  if (typeof window !== 'undefined') { window.addItem = addItem; }
   function updateItemText(month, source, id, newText){
     const item = findItem(month, source, id);
     if(item && newText.trim()){
@@ -737,21 +896,75 @@
   function renderMonthCard(month){
     const q = QUARTER_OF(month);
     const isPast = month < currentMonth;
+    const isMvp = activeMvpMonths.includes(month);
 
     const card = document.createElement("div");
-    card.className = "month-card q" + q + (isPast ? " is-past" : "");
+    card.className = "month-card q" + q + (isPast ? " is-past" : "") + (isMvp ? " is-mvp" : "");
 
+    // MVP일 때 왕관 아이콘 엘리먼트 추가
+    if(isMvp) {
+      const crown = document.createElement("div");
+      crown.className = "mvp-crown-badge";
+      crown.textContent = "👑";
+      crown.title = "이번 기수 MVP 달!";
+      card.appendChild(crown);
+    }
+
+    // 정산완료 배지 및 개별 월 적중률 계산 그룹 생성
     if(isPast){
+      const badgeGroup = document.createElement("div");
+      badgeGroup.className = "done-badge-group";
+
       const badge = document.createElement("div");
       badge.className = "done-badge";
       badge.innerHTML = '<span class="check">✔</span><span>정산완료</span>';
-      card.appendChild(badge);
+      badgeGroup.appendChild(badge);
+
+      // 개별 월 운세 이벤트 적중률 추출
+      const fortuneEvents = state.months[month].fortune.filter(it => it.type === "event");
+      if (fortuneEvents.length > 0) {
+        const activeEvents = fortuneEvents.filter(it => !it.cancelled).length;
+        const accuracy = Math.round((activeEvents / fortuneEvents.length) * 100);
+        
+        const accBadge = document.createElement("div");
+        accBadge.className = "accuracy-badge";
+        accBadge.innerHTML = `🔮 적중률 <strong>${accuracy}%</strong>`;
+        badgeGroup.appendChild(accBadge);
+      }
+
+      card.appendChild(badgeGroup);
     }
 
     const head = document.createElement("div");
     head.className = "month-head";
     head.innerHTML = `<span class="m-name">${MONTH_NAMES[month-1]}</span><span class="m-year-tag">${currentYear}</span>`;
     card.appendChild(head);
+
+    // [신규 기능] 계획 달성도(운세 계획 + 수기 계획 통틀어 계산) 바 레이아웃 배치
+    const totalActions = [
+      ...state.months[month].fortune.filter(it => it.type === "action"),
+      ...state.months[month].manual.filter(it => it.type === "action")
+    ];
+    
+    const achWrapper = document.createElement("div");
+    achWrapper.className = "month-achievement-wrapper";
+    
+    let achPercent = 0;
+    if(totalActions.length > 0) {
+      const checkedActions = totalActions.filter(it => it.checked && !it.cancelled).length;
+      achPercent = Math.round((checkedActions / totalActions.length) * 100);
+    }
+    
+    achWrapper.innerHTML = `
+      <div class="achievement-text">
+        <span>📈 계획 달성도</span>
+        <span>${achPercent}%</span>
+      </div>
+      <div class="achievement-bar-container">
+        <div class="achievement-bar" style="width: ${achPercent}%"></div>
+      </div>
+    `;
+    card.appendChild(achWrapper);
 
     // 1. Fortune box (운세)
     const fortuneBox = document.createElement("div");
@@ -800,7 +1013,7 @@
     manualBox.className = "group-box manual-box";
     const manualTitle = document.createElement("div");
     manualTitle.className = "group-title";
-    manualTitle.textContent = "✏ 수기";
+    manualTitle.textContent = "📝 수기";
     manualBox.appendChild(manualTitle);
 
     const manualList = document.createElement("div");
@@ -843,6 +1056,7 @@
   /* ---------------- RENDER SECTIONS ---------------- */
   function renderCalendar(){
     const root = document.getElementById("calendarRoot");
+    if(!root) return;
     root.innerHTML = "";
 
     let groups;
@@ -878,9 +1092,125 @@
     });
   }
 
+  /* 헤더 통계 정보 및 MVP 실시간 계산 함수 */
+  /* 헤더 통계 정보 및 MVP 실시간 계산 함수 */
+  function calculateGlobalStats() {
+    // 1. 1년 진행도 계산 (현재 달 기준 지나간 달의 비율)
+    const progressPercent = Math.round(((currentMonth - 1) / 12) * 100);
+    document.getElementById("totalProgress").textContent = `${progressPercent}%`;
+
+    // 2. 지금까지 정산 완료된 과거 달들의 누적 총 운세 적중률 계산
+    let totalFortuneEventsCount = 0;
+    let totalActiveEventsCount = 0;
+
+    // 3. 1년 전체 누적 달성도 변수 선언
+    let globalTotalActions = 0;
+    let globalCheckedActions = 0;
+
+    // 4. 각 월별 유효 스타 카운트 계산용 배열 (인덱스 1~12)
+    const monthlyStarCounts = Array(13).fill(0);
+
+    for (let m = 1; m <= 12; m++) {
+      const fortuneList = state.months[m].fortune;
+      const manualList = state.months[m].manual;
+
+      // 과거 달에 한하여 적중률 분모/분자 합산
+      if (m < currentMonth) {
+        const pastMonthEvents = fortuneList.filter(it => it.type === "event");
+        totalFortuneEventsCount += pastMonthEvents.length;
+        totalActiveEventsCount += pastMonthEvents.filter(it => !it.cancelled).length;
+      }
+
+      // 전체 기간 전체 계획 수집
+      const monthActions = [
+        ...fortuneList.filter(it => it.type === "action"),
+        ...manualList.filter(it => it.type === "action")
+      ];
+      globalTotalActions += monthActions.length;
+      globalCheckedActions += monthActions.filter(it => it.checked && !it.cancelled).length;
+
+      // 유효한 is-starred 카운팅 (is-cancelled 제외)
+      const validStars = [
+        ...fortuneList.filter(it => it.starred && !it.cancelled),
+        ...manualList.filter(it => it.starred && !it.cancelled)
+      ].length;
+      monthlyStarCounts[m] = validStars;
+    }
+
+    // 누적 적중률 화면 갱신
+    const totalAccuracyEl = document.getElementById("totalAccuracy");
+    if (totalFortuneEventsCount > 0) {
+      const globalAccuracy = Math.round((totalActiveEventsCount / totalFortuneEventsCount) * 100);
+      totalAccuracyEl.textContent = `${globalAccuracy}%`;
+    } else {
+      totalAccuracyEl.textContent = "-";
+    }
+
+    // 누적 달성도 화면 갱신
+    const totalAchEl = document.getElementById("totalAchievement");
+    if (globalTotalActions > 0) {
+      const globalAchievement = Math.round((globalCheckedActions / globalTotalActions) * 100);
+      totalAchEl.textContent = `${globalAchievement}%`;
+    } else {
+      totalAchEl.textContent = "0%";
+    }
+
+    // 5. 모드 기반 분기별/반기별 MVP 선정 로직 진행
+    activeMvpMonths = [];
+    let groupMvpRules = [];
+
+    if (state.mode === "quarter") {
+      groupMvpRules = [[1,2,3], [4,5,6], [7,8,9], [10,11,12]];
+    } else {
+      groupMvpRules = [[1,2,3,4,5,6], [7,8,9,10,11,12]];
+    }
+
+    groupMvpRules.forEach(monthList => {
+      let maxScore = -1;
+      let targetMonth = -1;
+      monthList.forEach(m => {
+        // [수정] 오직 '정산완료(현재 달보다 과거)'된 달만 MVP 후보로 인정
+        if (m < currentMonth) {
+          const score = monthlyStarCounts[m];
+          // 스타가 아예 없는 월(0개)은 MVP 후보에서 기본 제외
+          if (score > 0 && score > maxScore) {
+            maxScore = score;
+            targetMonth = m;
+          }
+        }
+      });
+      if (targetMonth !== -1) {
+        activeMvpMonths.push(targetMonth);
+      }
+    });
+
+    // 6. 1년 총틀어 최상위의 단 하나의 MVP 월 산출 (올해의 MVP)
+    let yearlyMaxScore = -1;
+    let yearlyMvpMonthNum = -1;
+    for (let m = 1; m <= 12; m++) {
+      // [수정] 올해의 MVP 역시 '정산완료(현재 달보다 과거)'된 달 중에서만 선별
+      if (m < currentMonth) {
+        const score = monthlyStarCounts[m];
+        if (score > 0 && score > yearlyMaxScore) {
+          yearlyMaxScore = score;
+          yearlyMvpMonthNum = m;
+        }
+      }
+    }
+    
+    const yearlyMvpEl = document.getElementById("yearlyMvpMonth");
+    if (yearlyMvpMonthNum !== -1) {
+      yearlyMvpEl.textContent = `${yearlyMvpMonthNum}월`;
+    } else {
+      yearlyMvpEl.textContent = "-";
+    }
+  }
+
   function render(){
+    calculateGlobalStats();
     renderCalendar();
   }
+  if (typeof window !== 'undefined') { window.render = render; }
 
   /* ---------------- FORTUNE PARSER ---------------- */
   function parseFortuneText(text){
@@ -901,76 +1231,207 @@
     return result;
   }
 
-  document.getElementById("applyFortuneBtn").addEventListener("click", ()=>{
-    const text = document.getElementById("fortuneInput").value;
-    const parsed = parseFortuneText(text);
-    const monthsFound = Object.keys(parsed);
-    if(monthsFound.length === 0){
-      alert("인식할 수 있는 [M1]~[M12] 규격 텍스트를 찾지 못했어요. 형식을 확인해 주세요.");
-      return;
-    }
-    monthsFound.forEach(mStr => {
-      const month = parseInt(mStr, 10);
-      const { events, actions } = parsed[mStr];
-      const newItems = [];
-      events.forEach(text => newItems.push({ id: uid(), type:"event", text, cancelled:false, starred:false, checked:false }));
-      actions.forEach(text => newItems.push({ id: uid(), type:"action", text, cancelled:false, starred:false, checked:false }));
-      state.months[month].fortune = newItems;
-    });
-    saveState();
-    render();
+  const applyFortuneBtn = document.getElementById("applyFortuneBtn");
+  if(applyFortuneBtn) {
+    applyFortuneBtn.addEventListener("click", ()=>{
+      const fortuneInput = document.getElementById("fortuneInput");
+      if(!fortuneInput) return;
+      const text = fortuneInput.value;
+      const parsed = parseFortuneText(text);
+      const monthsFound = Object.keys(parsed);
+      if(monthsFound.length === 0){
+        alert("인식할 수 있는 [M1]~[M12] 규격 텍스트를 찾지 못했어요. 형식을 확인해 주세요.");
+        return;
+      }
+      monthsFound.forEach(mStr => {
+        const month = parseInt(mStr, 10);
+        const { events, actions } = parsed[mStr];
+        const newItems = [];
+        events.forEach(text => newItems.push({ id: uid(), type:"event", text, cancelled:false, starred:false, checked:false }));
+        actions.forEach(text => newItems.push({ id: uid(), type:"action", text, cancelled:false, starred:false, checked:false }));
+        state.months[month].fortune = newItems;
+      });
+      saveState();
+      render();
 
-    const toast = document.getElementById("fortuneToast");
-    toast.classList.add("show");
-    setTimeout(()=> toast.classList.remove("show"), 2200);
-  });
+      const toast = document.getElementById("fortuneToast");
+      if(toast) {
+        toast.classList.add("show");
+        setTimeout(()=> toast.classList.remove("show"), 2200);
+      }
+    });
+  }
 
   /* ---------------- GUIDE MODAL ---------------- */
   const guideModal = document.getElementById("guideModal");
-  document.getElementById("promptCode").textContent = PROMPT_TEXT;
+  const promptCode = document.getElementById("promptCode");
+  if(promptCode) promptCode.textContent = PROMPT_TEXT;
 
-  document.getElementById("guideBtn").addEventListener("click", ()=>{
-    guideModal.classList.add("open");
-  });
-  document.getElementById("modalCloseBtn").addEventListener("click", ()=>{
-    guideModal.classList.remove("open");
-  });
-  guideModal.addEventListener("click", (e)=>{
-    if(e.target === guideModal) guideModal.classList.remove("open");
-  });
-
-  document.getElementById("copyPromptBtn").addEventListener("click", ()=>{
-    navigator.clipboard.writeText(PROMPT_TEXT).then(()=>{
-      const toast = document.getElementById("copyToast");
-      toast.classList.add("show");
-      setTimeout(()=> toast.classList.remove("show"), 2000);
-    }).catch(()=>{
-      alert("복사에 실패했어요. 직접 드래그해서 복사해 주세요.");
+  const guideBtn = document.getElementById("guideBtn");
+  if(guideBtn && guideModal) {
+    guideBtn.addEventListener("click", ()=>{
+      guideModal.classList.add("open");
     });
-  });
+  }
+  const modalCloseBtn = document.getElementById("modalCloseBtn");
+  if(modalCloseBtn && guideModal) {
+    modalCloseBtn.addEventListener("click", ()=>{
+      guideModal.classList.remove("open");
+    });
+  }
+  if(guideModal) {
+    guideModal.addEventListener("click", (e)=>{
+      if(e.target === guideModal) guideModal.classList.remove("open");
+    });
+  }
+
+  const copyPromptBtn = document.getElementById("copyPromptBtn");
+  if(copyPromptBtn) {
+    copyPromptBtn.addEventListener("click", ()=>{
+      navigator.clipboard.writeText(PROMPT_TEXT).then(()=>{
+        const toast = document.getElementById("copyToast");
+        if(toast) {
+          toast.classList.add("show");
+          setTimeout(()=> toast.classList.remove("show"), 2000);
+        }
+      }).catch(()=>{
+        alert("복사에 실패했어요. 직접 드래그해서 복사해 주세요.");
+      });
+    });
+  }
 
   /* ---------------- IMAGE EXPORT ---------------- */
-  document.getElementById("exportBtn").addEventListener("click", ()=>{
-    const target = document.getElementById("app");
-    html2canvas(target, {
-      backgroundColor: "#FBF8F1",
-      scale: 2,
-      useCORS: true,
-      ignoreElements: (el) => el.hasAttribute && el.hasAttribute("data-html2canvas-ignore")
-    }).then(canvas => {
-      const link = document.createElement("a");
-      const namePart = state.name ? state.name + "_" : "";
-      link.download = `${namePart}${currentYear}년_플래너.png`;
-      link.href = canvas.toDataURL("image/png");
-      link.click();
+  const exportBtn = document.getElementById("exportBtn");
+  if(exportBtn) {
+    exportBtn.addEventListener("click", ()=>{
+      const target = document.getElementById("app");
+      if(typeof html2canvas === 'undefined') {
+        alert("html2canvas 라이브러리가 로드되지 않았습니다.");
+        return;
+      }
+      html2canvas(target, {
+        backgroundColor: "#FBF8F1",
+        scale: 2,
+        useCORS: true,
+        ignoreElements: (el) => el.hasAttribute && el.hasAttribute("data-html2canvas-ignore")
+      }).then(canvas => {
+        const link = document.createElement("a");
+        const namePart = state.name ? state.name + "_" : "";
+        link.download = `${namePart}${currentYear}년_플래너.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      });
     });
-  });
+  }
+
+  /* ---------------- [신규 기능] 전체 데이터 초기화 ---------------- */
+  const resetBtn = document.getElementById("resetBtn");
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      const isConfirm = confirm("정말로 모든 데이터를 삭제하고 초기화하시겠습니까?\n작성하신 운세와 수기 데이터, 플래너 타이틀이 모두 초기화됩니다.");
+      
+      if (isConfirm) {
+        // 1. 로컬스토리지 데이터 제거
+        localStorage.removeItem(STORAGE_KEY);
+        
+        // 2. 전역 상태 변수 초기화
+        state = { 
+          name: "", 
+          title: "", 
+          mode: "half", 
+          months: defaultMonths() 
+        };
+        
+        // 3. 인풋 텍스트 및 에디터블 엘리먼트 초기화
+        setEditableState(userNameEl, state.name, "이름");
+        setEditableState(userTitleEl, state.title, "올해의 다짐을 적어보세요");
+        
+        const fortuneInput = document.getElementById("fortuneInput");
+        if (fortuneInput) fortuneInput.value = "";
+        
+        // 4. 모드 버튼 상태 변경 및 화면 리렌더링
+        refreshModeButtons();
+        render();
+        
+        alert("모든 데이터가 성공적으로 초기화되었습니다.");
+      }
+    });
+  }
 
   /* ---------------- INIT ---------------- */
   refreshModeButtons();
   render();
 
+/* ---------------- DATA BACKUP & RESTORE ---------------- */
+  // 1. 데이터 백업 (JSON 다운로드)
+  document.getElementById("downloadBackupBtn").addEventListener("click", () => {
+    try {
+      const dataStr = JSON.stringify(state, null, 2);
+      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+      
+      const exportFileDefaultName = `포춘플래너_백업_${new Date().toISOString().slice(0,10)}.json`;
+      
+      const linkElement = document.createElement('a');
+      linkElement.setAttribute('href', dataUri);
+      linkElement.setAttribute('download', exportFileDefaultName);
+      linkElement.click();
+    } catch (e) {
+      alert("데이터 백업 중 오류가 발생했습니다.");
+      console.error(e);
+    }
+  });
+
+  // 2. 데이터 복구 버튼 클릭 시 숨겨진 파일 인풋 트리거
+  const backupFileInput = document.getElementById("backupFileInput");
+  document.getElementById("uploadBackupBtn").addEventListener("click", () => {
+    backupFileInput.click();
+  });
+
+  // 3. 파일 선택 시 복구 로직 실행
+  backupFileInput.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const isConfirm = confirm("파일 데이터를 가져오시겠습니까?\n기존에 작성 중이던 데이터는 덮어씌워집니다.");
+    if (!isConfirm) {
+      backupFileInput.value = ""; // 인풋 초기화
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const parsed = JSON.parse(event.target.result);
+        
+        // 최소한의 데이터 유효성 검증 규칙 (months 객체 여부 체크)
+        if (!parsed || typeof parsed !== "object" || !parsed.months) {
+          throw new Error("올바르지 않은 백업 파일 형식입니다.");
+        }
+
+        // 상태값 교체 및 저장
+        state = parsed;
+        saveState();
+        
+        // 이름, 다짐 등 입력 폼 화면 리프레시
+        setEditableState(userNameEl, state.name, "이름");
+        setEditableState(userTitleEl, state.title, "올해의 다짐을 적어보세요");
+        refreshModeButtons();
+        
+        // 전체 달력 다시 그리기
+        render();
+        
+        alert("데이터가 성공적으로 복구되었습니다!");
+      } catch (err) {
+        alert("복구에 실패했습니다. 올바른 포춘 플래너 백업용 JSON 파일인지 확인해 주세요.");
+        console.error(err);
+      } finally {
+        backupFileInput.value = ""; // 재업로드가 가능하도록 인풋 초기화
+      }
+    };
+    reader.readAsText(file);
+  });
 })();
 </script>
+
 </body>
 </html>
