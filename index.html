@@ -278,7 +278,7 @@
     position: absolute;
     top: -38px; right: 8px;
     transform: rotate(-17deg);
-    opacity: .5;
+    opacity: .3;
     color: #ff416c;
     font-size: 113px;
     font-family: "Leckerli One", cursive;
@@ -533,10 +533,11 @@
     box-shadow: 0 20px 60px rgba(0,0,0,0.25);
   }
   .modal-box h2{ margin-top:0; font-size: 19px; }
+  .modal-box h3{ margin: 20px 0 8px; font-size: 15px; color: var(--color-text-main); }
   .modal-box ol{ font-size: 13px; color: var(--color-text-main); padding-left: 20px; }
   .modal-box ol li{ margin-bottom: 6px; }
   
-  /* 신규 프롬프트 탭 시스템 스타일 */
+  /* 프롬프트 탭 시스템 스타일 */
   .prompt-tabs {
     display: flex;
     gap: 8px;
@@ -580,6 +581,7 @@
   }
   .modal-inner{ position: relative; }
   .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top: 14px; }
+  .goal-section-wrapper { border: 1.5px dashed var(--color-text-main-soft); border-radius: 16px; padding: 18px; background: #fafafa; margin: 20px 0; }
 
   /* ============ 미디어 쿼리 (화면 대응 최적화) ============ */
   @media (max-width: 1280px) {
@@ -673,14 +675,30 @@
   <div class="modal-box">
     <div class="modal-inner">
       <button class="modal-close" id="modalCloseBtn">✕</button>
-      <h2>💡 AI 운세 사용 가이드</h2>
+
+      <h2>💡 AI 운세플랜 자동입력 프롬프트 사용법</h2>
       <ol>
-        <li>원하는 탭의 프롬프트를 복사해서 ChatGPT, 제미나이, 클로드 등 대화형 AI에게 붙여넣어 주세요.</li>
+        <li>원하는 방식의 프롬프트를 복사해서 ChatGPT, 제미나이, 클로드 등 대화형 AI에게 붙여넣어 주세요.</li>
         <li>AI 안내(사주 분석 또는 타로 결과 변환 프로세스)에 따라 필요 데이터를 제공합니다.</li>
         <li>AI 답변 중 <strong>[M1] ~ [M12] 규격 코드 블록</strong>만 복사해서, 이 페이지의 "AI 운세 텍스트 붙여넣기" 박스에 넣고 적용 버튼을 눌러주세요.</li>
       </ol>
 
-      <!-- 신규 변환: 프롬프트 선택 탭 추가 -->
+      <!-- 아예 상단 단독 섹션으로 올린 AI 목표 설계 프롬프트 영역 -->
+      <div class="goal-section-wrapper">
+        <h3 style="margin-top: 0;">🎯 STEP 0. AI 목표 정밀 설계형 프롬프트 (선택)</h3>
+        <p style="font-size:12.5px; margin: 0 0 10px; color: var(--color-text-main-soft);">
+          내 올해 핵심 목표와 제약 조건을 AI와의 인터뷰 대화를 통해 구체적인 텍스트 한 문단으로 뽑아내 주는 사전 빌드용 프롬프트입니다. 아래 복사하여 먼저 실행해 보세요!
+        </p>
+        <pre><code id="goalPromptCode"></code></pre>
+        <div style="display:flex; justify-content:flex-end; margin-top:8px;">
+          <button class="btn btn-secondary" id="copyGoalPromptBtn" style="font-size:12px; padding:6px 12px;">📋 목표 설계 프롬프트 복사</button>
+        </div>
+      </div>
+
+      <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 24px 0;">
+
+      <h3>🔮 STEP 1. 메인 운세 연동 프롬프트 선택</h3>
+      <!-- 기존 사주 / 타로 탭 시스템 구성 -->
       <div class="prompt-tabs">
         <button class="tab-btn active" data-target="integratedPrompt">🔮 사주/자미/점성술 통합형</button>
         <button class="tab-btn" data-target="tarotPrompt">🃏 타로 결과 변환형</button>
@@ -694,7 +712,7 @@
       </div>
 
       <div class="modal-actions">
-        <button class="btn btn-secondary" id="copyPromptBtn">📋 활성화된 프롬프트 복사하기</button>
+        <button class="btn btn-secondary" id="copyPromptBtn">📋 프롬프트 복사하기</button>
       </div>
       <span class="toast-msg" id="copyToast" style="display:block;text-align:right;margin-top:6px;">복사되었습니다!</span>
 
@@ -711,6 +729,7 @@
           타로를 볼 수 있는 사이트 입니다. (링크는 1년 운세 타로로 바로 이어집니다.)
         </li>
       </ol>
+
     </div>
   </div>
 </div>
@@ -727,6 +746,27 @@
   const QUARTER_OF = m => Math.floor((m-1)/3)+1; 
   const HALF_OF = m => m <= 6 ? 1 : 2;
 
+  const GOAL_PROMPT_TEXT = `# Role
+너는 사용자가 자신의 올해 운세를 가장 정밀하고 실천적으로 뽑아낼 수 있도록, 사용자의 내면 목표와 현재 상황을 이끌어내 주는 '라이프 코칭 인터뷰어'이다.
+
+# Context
+사용자는 마스터 오라클 AI에게 '올해 월별 운세 및 실천 계획'을 요청할 예정이다. 이 프롬프트의 목적은 사용자가 운세 AI에게 제출할 [지향점, 구체적 목표, 관심 문제]에 대한 답변을 풍성하고 구체적인 '한 단락의 서술형 글'로 완성할 수 있도록 돕는 것이다.
+
+# Process & AI 행동 지침 (핑퐁 대화 규칙)
+1. **단계적 질문(핑퐁)**: 한 번에 너무 많은 질문을 던져 사용자를 지치게 하지 마라. 한 번의 턴에는 **최대 1~2개의 핵심 질문**만 던져라.
+2. **구체성 유도**: 사용자가 "돈 많이 벌고 싶어", "성공하고 싶어" 같이 추상적으로 답변하면, 공감해 준 뒤 "그 돈을 벌기 위해 지금 준비 중인 수단(예: 외주, 주식, 이직 등)이 무엇인지", "특별히 조심하거나 피하고 싶은 상황(예: 특정 시간대 스트레스, 인간관계 등)이 있는지" 등의 꼬리 질문을 던져 구체성을 확보해라.
+3. **종료 조건**: 사용자의 현재 상황, 집중하고 싶은 분야, 극복하고 싶은 문제(시간적/환경적 제약 조건 등)가 구체적인 키워드로 모두 확보되었다고 판단되면 핑퐁을 종료해라.
+4. **최종 출력**: 정보가 충분히 모이면, 사용자가 [2차 프롬프트]의 2번 항목에 **그대로 복사+붙여넣기 할 수 있는 '자연스럽고 완성도 높은 서술형 문장'**을 최종 결과물로 작성해 주어라.
+
+---
+
+# 첫 번째 응답 지침 (First Turn)
+다른 부연 설명이나 인사말은 모두 생략하고, 사용자의 몰입을 위해 딱 아래의 웰컴 질문만 던지며 대화를 시작해라.
+
+"올해 남은 기간 동안 당신에게 딱 맞춘 정밀한 운세 계획을 세울 수 있도록, 저와 몇 가지 대화를 나눠볼게요! 
+
+먼저, **올해 남은 달 동안 가장 집중해서 성과를 내고 싶거나 변화를 주고 싶은 분야(예: 재테크/투자, 부업/외주, 이직, 학업, 연애 등)**는 무엇인가요? 현재 어떤 상황이신지 편하게 들려주세요."`;
+
   const PROMPT_TEXT = `당신은 사주 명리학, 자미두수, 서양 점성술 등 다원적 운명학 데이터를 종합 분석하여 인간의 삶에 긍정적이고 실천적인 라이프 코칭을 제공하는 고도의 마스터 오라클이자 라이프 코치입니다.
 
 지금부터 나와 단계별로 대화하며 나의 올해 월별 운세를 뽑아낼 거니까, 아래 규칙을 기억하고 제 신호에 맞춰 움직여 주세요.
@@ -735,7 +775,7 @@
 
 ### [데이터 통합 및 분석 지침]
 - 유저가 제공하는 데이터는 [사주 명리학 / 자미두수 / 서양 점성술] 중 일부 또는 전부일 수 있습니다.
-- 만약 2개 이상의 운세 도구 데이터가 제공된다면, 각 도구의 단편적인 해석을 나열하는 것을 절대 금지합니다. 대신, 여러 도구에서 공통적으로 가리키는 강점, 위기 요소, 에너지의 흐름을 교차 검증(Cross-Referencing)하여 하나의 정교한 '통합 운세 흐름'으로 융합해 내야 합니다.
+- 만약 2개 이상의 운세 도구 데이터가 제공된다면, 각 도구의 단편적인 해석을 나열하는 것을 절대 금지합니다. 대신, 여러 도구에서 공통적으로 가리키는 강점, 위기 요소, 에너지의 흐름을 교차 검증(CrossReferencing)하여 하나의 정교한 '통합 운세 흐름'으로 융합해 내야 합니다.
 - 만약 1개의 데이터만 제공된다면, 해당 도구의 체계와 길흉화복을 최대한 깊이 있게 파고들어 정밀하게 분석하세요.
 
 ### [대화 진행 순서]
@@ -765,7 +805,6 @@
 [M1] ⚡새로운 계약운이 들어오는 시기▲문서상 이득이 생길 수 있음 | 📝포트폴리오를 적극적으로 다듬기▲기존 포맷 수정하기▲새 계약서 꼼꼼히 검토하기
 [M2] ⚡주변 사람과의 마찰이나 구설수 조심▲예상치 못한 업무 수정 요청 | 📝중요한 미팅은 중순 이후로 잡기▲회의 시 말을 아끼고 기록 위주로 하기`;
 
-  // 신규 추가: 타로 결과용 프롬프트 데이터 정의
   const TAROT_PROMPT_TEXT = `당신은 유저가 이미 리딩받은 '1년 타로 운세 결과'를 분석하여, 이를 웹사이트 플래너 시스템에 등록할 수 있는 직관적인 이벤트와 실천적 라이프 코칭 계획으로 정밀 가공하는 데이터 정제 마스터입니다.
 
 지금부터 제가 1년 타로 리딩 결과와 저의 목표를 제시하면, 다른 부연 설명이나 인사는 모두 생략하고 오직 아래의 [출력 규칙]과 [출력 규격 양식]에 맞춘 '복사 가능한 코드 블록(Code Block)'만 최종 결과물로 출력해 주세요.
@@ -793,7 +832,6 @@
   const currentYear = today.getFullYear();
   const currentMonth = today.getMonth() + 1;
 
-  // MVP 판단을 위한 전역 활성 MVP 리스트 객체
   let activeMvpMonths = [];
 
   function defaultMonths(){
@@ -1008,7 +1046,6 @@
     const card = document.createElement("div");
     card.className = "month-card q" + q + (isPast ? " is-past" : "") + (isMvp ? " is-mvp" : "");
 
-    // MVP일 때 왕관 아이콘 엘리먼트 추가
     if(isMvp) {
       const crown = document.createElement("div");
       crown.className = "mvp-crown-badge";
@@ -1017,7 +1054,6 @@
       card.appendChild(crown);
     }
 
-    // 정산완료 배지 및 개별 월 적중률 계산 그룹 생성
     if(isPast){
       const badgeGroup = document.createElement("div");
       badgeGroup.className = "done-badge-group";
@@ -1027,7 +1063,6 @@
       badge.innerHTML = '<span class="check">✔</span><span>정산완료</span>';
       badgeGroup.appendChild(badge);
 
-      // 개별 월 운세 이벤트 적중률 추출
       const fortuneEvents = state.months[month].fortune.filter(it => it.type === "event");
       if (fortuneEvents.length > 0) {
         const activeEvents = fortuneEvents.filter(it => !it.cancelled).length;
@@ -1047,7 +1082,6 @@
     head.innerHTML = `<span class="m-name">${MONTH_NAMES[month-1]}</span><span class="m-year-tag">${currentYear}</span>`;
     card.appendChild(head);
 
-    // 계획 달성도(운세 계획 + 수기 계획 통틀어 계산) 바 레이아웃 배치
     const totalActions = [
       ...state.months[month].fortune.filter(it => it.type === "action"),
       ...state.months[month].manual.filter(it => it.type === "action")
@@ -1073,7 +1107,6 @@
     `;
     card.appendChild(achWrapper);
 
-    // 1. Fortune box (운세)
     const fortuneBox = document.createElement("div");
     fortuneBox.className = "group-box fortune-box";
     const fortuneTitle = document.createElement("div");
@@ -1115,7 +1148,6 @@
     
     card.appendChild(fortuneBox);
 
-    // 2. Manual box (수기)
     const manualBox = document.createElement("div");
     manualBox.className = "group-box manual-box";
     const manualTitle = document.createElement("div");
@@ -1199,7 +1231,6 @@
     });
   }
 
-  /* 헤더 통계 정보 및 MVP 실시간 계산 함수 */
   function calculateGlobalStats() {
     const progressPercent = Math.round(((currentMonth - 1) / 12) * 100);
     document.getElementById("totalProgress").textContent = `${progressPercent}%`;
@@ -1354,13 +1385,14 @@
 
   /* ---------------- GUIDE MODAL & PROMPT TABS ---------------- */
   const guideModal = document.getElementById("guideModal");
+  const goalPromptCode = document.getElementById("goalPromptCode");
   const promptCode = document.getElementById("promptCode");
   const tarotPromptCode = document.getElementById("tarotPromptCode");
   
+  if(goalPromptCode) goalPromptCode.textContent = GOAL_PROMPT_TEXT;
   if(promptCode) promptCode.textContent = PROMPT_TEXT;
   if(tarotPromptCode) tarotPromptCode.textContent = TAROT_PROMPT_TEXT;
 
-  // 신규 기능: 가이드 모달 내부 탭 변경 스크립트
   const tabButtons = document.querySelectorAll(".prompt-tabs .tab-btn");
   tabButtons.forEach(btn => {
     btn.addEventListener("click", () => {
@@ -1391,7 +1423,22 @@
     });
   }
 
-  // 신규 기능: 현재 활성화되어 활성화되어 있는 프롬프트 내용 복사
+  // 목표 설계 프롬프트 전용 복사 액션 처리
+  const copyGoalPromptBtn = document.getElementById("copyGoalPromptBtn");
+  if(copyGoalPromptBtn && goalPromptCode) {
+    copyGoalPromptBtn.addEventListener("click", ()=>{
+      navigator.clipboard.writeText(goalPromptCode.textContent).then(()=>{
+        const toast = document.getElementById("copyToast");
+        if(toast) {
+          toast.classList.add("show");
+          setTimeout(()=> toast.classList.remove("show"), 2000);
+        }
+      }).catch(()=>{
+        alert("복사에 실패했어요. 직접 드래그해서 복사해 주세요.");
+      });
+    });
+  }
+
   const copyPromptBtn = document.getElementById("copyPromptBtn");
   if(copyPromptBtn) {
     copyPromptBtn.addEventListener("click", ()=>{
@@ -1434,7 +1481,7 @@
     });
   }
 
-  /* ---------------- 전체 데이터 초기화 ---------------- */
+  /* ---------------- DATA INITIALIZATION ---------------- */
   const resetBtn = document.getElementById("resetBtn");
   if (resetBtn) {
     resetBtn.addEventListener("click", () => {
@@ -1462,10 +1509,6 @@
       }
     });
   }
-
-  /* ---------------- INIT ---------------- */
-  refreshModeButtons();
-  render();
 
   /* ---------------- DATA BACKUP & RESTORE ---------------- */
   document.getElementById("downloadBackupBtn").addEventListener("click", () => {
@@ -1525,6 +1568,10 @@
     };
     reader.readAsText(file);
   });
+
+  /* ---------------- INIT ---------------- */
+  refreshModeButtons();
+  render();
 })();
 </script>
 
