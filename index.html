@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Leckerli+One&display=swap');
   :root{
     /* 기본 색상 및 레이아웃 시스템 */
     --paper: #ffffff;
@@ -263,12 +264,31 @@
 
   /* MVP 카드 전용 화려한 스타일 선언 */
   .month-card.is-mvp {
+    position: relative;
     border:2px solid #ff416c !important;
+  }
+  .month-card.is-mvp .month-head,
+  .month-card.is-mvp .month-achievement-wrapper{
+    position: relative;
+    z-index: 1;
+  }
+  .month-card.is-mvp::before{
+    content: "Mvp";
+    display: inline-block;
+    position: absolute;
+    top: -38px; right: 8px;
+    transform: rotate(-17deg);
+    opacity: .5;
+    color: #ff416c;
+    font-size: 113px;
+    font-family: "Leckerli One", cursive;
+    font-weight: 400;
+    z-index: 0;
   }
   .mvp-crown-badge {
     position: absolute;
     top: -17px;
-    left: 11px;
+    left: 17px;
     font-size: 30px;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
     animation: bounce 2s infinite ease-in-out;
@@ -567,6 +587,7 @@
     .quarter-section { padding: 0 4px; }
     .months-grid { gap: 14px; }
     .month-card { padding: 18px 16px; }
+    .mvp-crown-badge{left: 11px;}
   }
 
   @media (max-width: 980px){
